@@ -1,16 +1,9 @@
-//Top Navigation
-
-const TAB_SELECTOR = document.querySelectorAll('#topnav section>a');
-const TAB_GROUP = document.querySelectorAll('[role="group"]');
+const colorScheme = ["primaryColor", "secondaryColor", "tertiaryColor", "backgroundColor", "surfaceColor", "surfaceColorHover", "defaultWhite", "textColor", "arrowPrimary", "arrowSecondary", "arrowTertiary", "arrowAlternate", "lastMove", "preMove", "moveIndicator", "boardDark", "boardLight"];
 const STREAMER_STYLES = `
 @media (min-width: 800px),
 (orientation: landscape) {
 
-    cg-container cg-board {
-        box-shadow: none !important;
-    }
-
-    div.round__app {
+    main div.round__app {
         grid-template-columns: minmax(calc(70vmin * var(--board-scale)), calc(100vh * var(--board-scale) - calc(var(--site-header-height) + var(--site-header-margin)) - 3rem)) minmax(240px, 400px);
         grid-template-rows: 50px 1fr auto min-content 3fr auto min-content auto 1fr 50px !important;
         grid-template-areas: 'user-top .''board .''board mat-top''board expi-top''board moves''board controls''board expi-bot''board mat-bot''board .''user-bot .''kb-move .';
@@ -62,8 +55,12 @@ const STREAMER_STYLES = `
         font-size: 1.5em;
         line-height: 0px;
         height: 100%;
+        width: 10ch;
         display: flex;
         align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-family: 'Red Hat Display', sans-serif;
     }
 
     .rclock.running .time {
@@ -80,7 +77,7 @@ const STREAMER_STYLES = `
         height: 100%;
         background: var(--defaultWhite);
         opacity: .1;
-        border-radius: var(--borderRadius);
+        border-radius: 4px;
         z-index: -1;
     }
 
@@ -93,7 +90,7 @@ const STREAMER_STYLES = `
         background: var(--tertiaryColor);
     }
 
-    .ruser {
+    .round__app .ruser {
         font-size: 16px;
         padding: 0em !important;
         line-height: 14px;
@@ -124,7 +121,11 @@ const STREAMER_STYLES = `
     }
 
     .ricons {
-        margin-top: 0;
+        margin-top: 8px;
+    }
+
+    .round__underboard:empty {
+        display: none;
     }
 }
 
@@ -133,31 +134,31 @@ const STREAMER_STYLES = `
 }
 `
 
-// Navbar Animations
-TAB_SELECTOR.forEach((item, index) => {
-    item.addEventListener('mouseenter', e => {
-        if (item.nextSibling == TAB_GROUP[index]) {
-            item.nextSibling.classList.add('topnavHover');
-        }
-    })
+colorScheme.forEach(scheme => schemeSet(scheme));
 
-    item.addEventListener('mouseleave', e => {
-        if (item.nextSibling == TAB_GROUP[index]) {
-            item.nextSibling.classList.remove('topnavHover');
+function schemeSet(scheme) {
+    chrome.storage.sync.get(scheme, function (result) {
+        console.log(scheme + " : " + result[scheme]);
+        if (result[scheme]) {
+            let getStyle = document.documentElement.getAttribute('style');
+            let appendStyle = getStyle ? getStyle : '';
+            document.documentElement.setAttribute("style", `${appendStyle} --${scheme}: ${result[scheme]} !important;`);
         }
-    })
+    });
+}
 
-    item.nextSibling.addEventListener('mouseenter', e => {
-        if (item.nextSibling == TAB_GROUP[index]) {
-            item.nextSibling.classList.add('topnavHover');
-        }
-    })
+// Coordinates
 
-    item.nextSibling.addEventListener('mouseleave', e => {
-        if (item.nextSibling == TAB_GROUP[index]) {
-            item.nextSibling.classList.remove('topnavHover');
-        }
-    })
+//Check if using default board
+//if true, use lichess variable
+//else use custom variables
+
+chrome.storage.sync.get(null, function (result) {
+    let darkCoord = result['defaultBoardSwitch'] ? 'var(--cg-coord-color-black)' : 'var(--boardDark)';
+    let lightCoord = result['defaultBoardSwitch'] ? 'var(--cg-coord-color-white)' : 'var(--boardLight)';
+    let getStyle = document.documentElement.getAttribute('style');
+    let appendStyle = getStyle ? getStyle : '';
+    document.documentElement.setAttribute("style", `${appendStyle} --coordDark: ${darkCoord} !important; --coordLight: ${lightCoord} !important;`);
 })
 
 // Setup Streamer mode button only runs on match/tv pages

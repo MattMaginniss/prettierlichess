@@ -1,6 +1,6 @@
 {
     "name": "Prettier Lichess",
-    "version": "3.2.9",
+    "version": "3.3.8",
     "manifest_version": 2,
     "description": "Lichess, but prettier.",
     "icons": {
@@ -27,17 +27,11 @@
         "scripts": ["background.js"],
         "persistant": false
     },
-    "content_security_policy": "script-src 'self' https://cdn.jsdelivr.net/; object-src 'self';",
+    "content_security_policy": "script-src 'self'; object-src 'self';",
     "web_accessible_resources": [
         "styles.css",
-        "fonts/RedHatDisplay-Regular.ttf",
-        "fonts/RedHatDisplay-Bold.ttf",
-        "fonts/RedHatText-Medium.ttf",
-        "fonts/RedHatText-MediumItalic.ttf",
-        "fonts/RedHatText-Bold.ttf",
-        "fonts/RedHatText-BoldItalic.ttf",
-        "fonts/RedHatText-Regular.ttf",
-        "fonts/RedHatText-Italic.ttf"
+        "fonts/*",
+        "pieces/*"
     ],
     "browser_specific_settings": {
         "gecko": {
